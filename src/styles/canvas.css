@@ -1,0 +1,72 @@
+.cowin-canvas-node-hit {
+  pointer-events: all;
+}
+
+.cowin-canvas-icon-bg {
+  pointer-events: all;
+}
+
+.cowin-canvas-label {
+  dominant-baseline: auto;
+  pointer-events: none;
+  user-select: none;
+}
+
+.djs-overlay-debug {
+  z-index: 90;
+}
+
+.cowin-debug-breakpoint-button {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 1px solid #ec221f;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgb(15 23 42 / 20%);
+  cursor: pointer;
+}
+
+.cowin-debug-breakpoint-button::before {
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ec221f;
+  content: '';
+}
+
+.cowin-debug-breakpoint-button:hover {
+  background: #fff1f2;
+}
+
+.cowin-debug-breakpoint-button-active {
+  background: #ec221f;
+}
+
+.cowin-debug-breakpoint-button-active::before {
+  background: #fff;
+}
+
+.cowin-debug-breakpoint-button-active:hover {
+  background: #d91d1a;
+}
+
+.cowin-has-issue .cowin-canvas-node-hit {
+  fill: #fff1f2;
+  stroke: #ec221f;
+}
+
+.cowin-has-issue .cowin-canvas-icon-bg {
+  fill: #ec221f;
+}
+
+.cowin-has-issue .cowin-canvas-label {
+  fill: #ec221f;
+}
+
+.cowin-has-issue.selected .djs-outline {
+  stroke: #ec221f;
+}

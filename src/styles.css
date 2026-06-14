@@ -1,0 +1,13 @@
+@import 'tailwindcss';
+
+@import './styles/base.css';
+@import './styles/editor-layout.css';
+@import './styles/editor-toolbar.css';
+@import './styles/palette.css';
+@import './styles/output-variables.css';
+@import './styles/node-dialog.css';
+@import './styles/node-config.css';
+@import './styles/minimap.css';
+@import './styles/canvas.css';
+@import './styles/context-pad.css';
+@import './styles/editor-footer.css';

@@ -1,0 +1,78 @@
+.djs-minimap {
+  top: auto;
+  right: 12px;
+  bottom: 46px;
+  z-index: 120;
+  border-color: #b9c4cf;
+  border-radius: 0;
+  box-shadow: 0 2px 8px rgb(15 23 42 / 12%);
+}
+
+.djs-minimap .toggle {
+  display: none;
+}
+
+.djs-minimap:not(.open) {
+  display: none;
+}
+
+.djs-minimap .map {
+  width: 180px;
+  height: 118px;
+}
+
+.djs-minimap .viewport-dom {
+  border-color: #0878be;
+  border-radius: 0;
+}
+
+.djs-minimap.open .overlay {
+  background: rgb(255 255 255 / 18%);
+}
+
+.cowin-minimap-controls {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 121;
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  border: 1px solid #cfd7df;
+  background: #fff;
+  box-shadow: 0 1px 3px rgb(15 23 42 / 10%);
+}
+
+.cowin-minimap-button {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-left: 1px solid #d9dfe5;
+  background: transparent;
+  cursor: pointer;
+}
+
+.cowin-minimap-button:first-child {
+  border-left: 0;
+}
+
+.cowin-minimap-button:hover,
+.cowin-minimap-button-active {
+  background: #d8ecf8;
+}
+
+.cowin-minimap-button img {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+.cowin-minimap-zoom {
+  min-width: 44px;
+  color: #4b5563;
+  font-size: 12px;
+  text-align: center;
+}

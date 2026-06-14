@@ -1,0 +1,95 @@
+.cowin-editor-toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  height: 32px;
+  flex-shrink: 0;
+  border-bottom: 1px solid #cfd7df;
+  background: #f8f9fb;
+  font-size: 12px;
+}
+
+.cowin-toolbar-side {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  padding: 0 8px;
+}
+
+.cowin-toolbar-side-right {
+  justify-content: flex-end;
+}
+
+.cowin-toolbar-button {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  margin-right: 2px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  background: transparent;
+  color: #56616d;
+  cursor: pointer;
+}
+
+.cowin-toolbar-side-right .cowin-toolbar-button {
+  margin-right: 0;
+  margin-left: 2px;
+}
+
+.cowin-toolbar-button:hover,
+.cowin-toolbar-button-active {
+  border-color: #b8d6e8;
+  background: #d8ecf8;
+}
+
+.cowin-toolbar-button-danger {
+  color: #ec221f;
+}
+
+.cowin-toolbar-button img {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+.cowin-toolbar-button span {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.cowin-toolbar-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 360px;
+  color: #344050;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.cowin-toolbar-flow-name {
+  font-weight: 600;
+}
+
+.cowin-toolbar-status-dot {
+  color: #0878be;
+  font-weight: 700;
+}
+
+.cowin-toolbar-chevron {
+  color: #5c6773;
+}
+
+.cowin-toolbar-divider {
+  color: #8d97a1;
+  margin: 0 4px;
+}
+
+.cowin-toolbar-deploy {
+  padding: 1px 5px;
+  color: #1e9f54;
+  font-weight: 700;
+}

@@ -1,0 +1,43 @@
+.djs-context-pad .cowin-context-entry::before {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+  border-radius: 0;
+  background: var(--cowin-node-color, #0878be);
+  color: #fff;
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.djs-context-pad .cowin-context-start::before {
+  content: 'S';
+  color: #059669;
+}
+
+.djs-context-pad .cowin-context-approval::before {
+  content: 'A';
+  color: #2563eb;
+}
+
+.djs-context-pad .cowin-context-api::before {
+  content: 'API';
+  color: #0f766e;
+}
+
+.djs-context-pad .cowin-context-condition::before {
+  content: '?';
+  color: #d97706;
+}
+
+.djs-context-pad .cowin-context-end::before {
+  content: 'E';
+  color: #dc2626;
+}
+
+.djs-context-pad .bpmn-icon-trash {
+  color: #ec221f;
+}

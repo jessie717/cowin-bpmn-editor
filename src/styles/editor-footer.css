@@ -1,0 +1,109 @@
+.cowin-editor-footer {
+  flex-shrink: 0;
+  border-top: 1px solid #d5d5d5;
+  background: #f7f7f7;
+}
+
+.cowin-footer-table-wrap {
+  position: relative;
+  height: 118px;
+  overflow: auto;
+  background: #fff;
+}
+
+.cowin-footer-table {
+  min-width: 1680px;
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  color: #444;
+  font-size: 12px;
+}
+
+.cowin-footer-table th,
+.cowin-footer-table td {
+  height: 24px;
+  padding: 0 8px;
+  border-right: 1px solid #cfcfcf;
+  border-bottom: 1px solid #dcdcdc;
+  overflow: hidden;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cowin-footer-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #f6f6f6;
+  color: #666;
+  font-weight: 400;
+}
+
+.cowin-footer-table th:first-child,
+.cowin-footer-table td:first-child {
+  text-align: right;
+}
+
+.cowin-footer-clickable-row {
+  cursor: pointer;
+}
+
+.cowin-footer-clickable-row:hover td {
+  background: #eef7fc;
+}
+
+.cowin-footer-empty-state {
+  position: sticky;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 90px;
+  color: #999;
+  font-size: 12px;
+}
+
+.cowin-footer-tabs {
+  display: flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 18px;
+  border-top: 1px solid #d9d9d9;
+  background: #f7f7f7;
+}
+
+.cowin-footer-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  margin-right: 20px;
+  padding: 0 6px;
+  border: 0;
+  border-top: 2px solid transparent;
+  background: transparent;
+  color: #555;
+  font-size: 12px;
+  line-height: 28px;
+  cursor: pointer;
+}
+
+.cowin-footer-tab:hover,
+.cowin-footer-tab-active {
+  color: #222;
+}
+
+.cowin-footer-tab-active {
+  border-top-color: #0878be;
+  background: #fff;
+  font-weight: 600;
+}
+
+.cowin-footer-tab img {
+  display: block;
+  width: 16px;
+  height: 16px;
+}

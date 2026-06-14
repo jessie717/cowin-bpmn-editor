@@ -1,0 +1,26 @@
+{
+  "name": "Cowin",
+  "uri": "https://cowin.local/schema/bpmn",
+  "prefix": "cowin",
+  "xml": {
+    "tagAlias": "lowerCase"
+  },
+  "types": [
+    {
+      "name": "CustomAttrs",
+      "extends": ["bpmn:BaseElement"],
+      "properties": [
+        {
+          "name": "nodeType",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "config",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    }
+  ]
+}

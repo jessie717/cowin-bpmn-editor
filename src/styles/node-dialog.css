@@ -1,0 +1,105 @@
+.cowin-node-dialog-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgb(15 23 42 / 18%);
+}
+
+.cowin-node-dialog {
+  width: min(760px, calc(100vw - 48px));
+  max-height: min(640px, calc(100vh - 80px));
+  overflow: hidden;
+  border: 1px solid #cfd7df;
+  background: #fff;
+  box-shadow: 0 12px 30px rgb(15 23 42 / 18%);
+}
+
+.cowin-node-dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 50px;
+  padding: 10px 14px;
+  border-bottom: 1px solid #d9dfe5;
+  background: #f8f9fb;
+}
+
+.cowin-node-dialog-header h2 {
+  margin: 0;
+  color: #1f2933;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.cowin-node-dialog-header p {
+  margin: 3px 0 0;
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.cowin-node-dialog-header button {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  background: transparent;
+  color: #ec221f;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.cowin-node-dialog-body {
+  max-height: 560px;
+  overflow: auto;
+  padding: 14px;
+}
+
+.cowin-node-dialog-field {
+  display: block;
+  margin-bottom: 12px;
+}
+
+.cowin-node-dialog-field > span {
+  display: block;
+  margin-bottom: 5px;
+  color: #4b5563;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.cowin-node-dialog-field strong {
+  margin-left: 3px;
+  color: #ec221f;
+}
+
+.cowin-node-dialog-control {
+  width: 100%;
+  min-height: 32px;
+  border: 1px solid #cfd7df;
+  background: #fff;
+  padding: 6px 8px;
+  color: #1f2933;
+  font-size: 13px;
+  outline: none;
+}
+
+textarea.cowin-node-dialog-control {
+  min-height: 88px;
+  resize: vertical;
+}
+
+.cowin-node-dialog-control:focus {
+  border-color: #0878be;
+  box-shadow: 0 0 0 2px rgb(8 120 190 / 14%);
+}
+
+.cowin-node-dialog-empty {
+  margin: 0;
+  color: #7b8794;
+  font-size: 13px;
+}

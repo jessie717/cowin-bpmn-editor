@@ -1,0 +1,26 @@
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="&#230;&#181;&#129;&#231;&#168;&#139;-debug">
+<path id="Subtract" d="M7.85742 1C9.43538 1 10.7148 2.27947 10.7148 3.85742C10.7148 4.57158 10.0141 5 9.2999 5H6.41494C5.70079 5 5.00003 4.57158 5 3.85742C5 2.27947 6.27947 1 7.85742 1Z" fill="#009951"/>
+<path id="Subtract_2" d="M9.85938 6C10.7201 6 11.5841 6.35014 11.9609 7.12402C12.305 7.8307 12.5 8.64013 12.5 9.5C12.5 11.9877 10.8648 14.0504 8.72357 14.435C8.60533 14.4562 8.5 14.3628 8.5 14.2427V9C8.5 8.72386 8.27614 8.5 8 8.5C7.72386 8.5 7.5 8.72386 7.5 9V14.2427C7.5 14.3628 7.39467 14.4562 7.27643 14.435C5.13519 14.0504 3.5 11.9877 3.5 9.5C3.5 8.64013 3.69498 7.8307 4.03906 7.12402C4.4159 6.35014 5.27986 6 6.14062 6H9.85938Z" fill="#009951"/>
+<g id="Rotated Instances">
+<g id="Rotated Instance 2">
+<rect id="Rectangle 136" x="12.5957" y="4.30005" width="1" height="4" rx="0.5" transform="rotate(45 12.5957 4.30005)" fill="#009951"/>
+</g>
+<g id="Rotated Instance 3">
+<rect id="Rectangle 136_2" x="15" y="9.10376" width="1" height="4" rx="0.5" transform="rotate(90 15 9.10376)" fill="#009951"/>
+</g>
+<g id="Rotated Instance 4">
+<rect id="Rectangle 136_3" x="13.3027" y="14.1995" width="1" height="4" rx="0.5" transform="rotate(135 13.3027 14.1995)" fill="#009951"/>
+</g>
+<g id="Rotated Instance 6">
+<rect id="Rectangle 136_4" x="3.4043" y="14.9075" width="1" height="4" rx="0.5" transform="rotate(-135 3.4043 14.9075)" fill="#009951"/>
+</g>
+<g id="Rotated Instance 7">
+<rect id="Rectangle 136_5" x="1" y="10.1038" width="1" height="4" rx="0.5" transform="rotate(-90 1 10.1038)" fill="#009951"/>
+</g>
+<g id="Rotated Instance 8">
+<rect id="Rectangle 136_6" x="2.69727" y="5.00806" width="1" height="4" rx="0.5" transform="rotate(-45 2.69727 5.00806)" fill="#009951"/>
+</g>
+</g>
+</g>
+</svg>
