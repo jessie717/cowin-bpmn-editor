@@ -8,9 +8,33 @@ import {
   stringifyParameterList,
   type FunctionInputParameter,
   type FunctionOutputParameter
-} from '../../variables'
-import { getInputValue, renderVariableTypeSelect } from './helpers'
-import type { NodeConfigPanelProps } from './types'
+} from '../../../shared/config'
+import type { NodeConfigPanelProps } from '../../../../editor/components/node-config/types'
+
+function getInputValue(event: Event) {
+  return (
+    event.target as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+  ).value
+}
+
+function renderVariableTypeSelect(
+  value: string,
+  onChange: (value: string) => void
+) {
+  return (
+    <select
+      class="cowin-parameter-control"
+      value={value || VARIABLE_TYPES[0]}
+      onChange={(event) => onChange(getInputValue(event))}
+    >
+      {VARIABLE_TYPES.map((type) => (
+        <option key={type} value={type}>
+          {type}
+        </option>
+      ))}
+    </select>
+  )
+}
 
 export const FunctionConfigPanel = defineComponent({
   name: 'FunctionConfigPanel',

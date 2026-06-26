@@ -4,8 +4,8 @@ import {
   getOutgoingNames,
   pushIssue,
   validateUniqueOutgoingNames
-} from './helpers'
-import type { NodeValidationRule } from './types'
+} from '../../../shared/validation'
+import type { NodeValidationRule } from '../../../types'
 
 export const validateIf: NodeValidationRule = (context) => {
   assertIncomingCount(context, 1)

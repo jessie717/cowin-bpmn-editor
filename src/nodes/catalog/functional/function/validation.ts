@@ -1,24 +1,29 @@
 import {
   CONFIG_KEYS,
+  VARIABLE_TYPES,
   parseParameterList,
   type FunctionInputParameter,
   type FunctionOutputParameter
-} from '../../variables'
+} from '../../../shared/config'
 import {
   assertIncomingCount,
   assertOutgoingCount,
-  getUpstreamOutputVariables,
-  isValidVariableType,
   pushIssue
-} from './helpers'
-import type { NodeValidationRule } from './types'
+} from '../../../shared/validation'
+import type { NodeValidationRule } from '../../../types'
+
+function isValidVariableType(type?: string) {
+  return VARIABLE_TYPES.includes(type || '')
+}
 
 export const validateFunction: NodeValidationRule = (context) => {
   assertIncomingCount(context, 1)
   assertOutgoingCount(context, 1)
 
   const upstreamVariables = new Set(
-    getUpstreamOutputVariables(context.element).map((variable) => variable.id)
+    (context.getUpstreamOutputVariables?.(context.element) ?? []).map(
+      (variable) => variable.id
+    )
   )
   const inputParameters = parseParameterList<FunctionInputParameter>(
     context.config[CONFIG_KEYS.functionInputs]

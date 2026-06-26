@@ -1,8 +1,13 @@
 import { defineComponent } from 'vue'
 import type { PropType } from 'vue'
-import { CONFIG_KEYS, VARIABLE_TYPES } from '../../variables'
-import { getInputValue } from './helpers'
-import type { NodeConfigPanelProps } from './types'
+import { CONFIG_KEYS, VARIABLE_TYPES } from '../../../shared/config'
+import type { NodeConfigPanelProps } from '../../../../editor/components/node-config/types'
+
+function getInputValue(event: Event) {
+  return (
+    event.target as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+  ).value
+}
 
 export const ManualStartConfigPanel = defineComponent({
   name: 'ManualStartConfigPanel',
@@ -56,7 +61,7 @@ export const ManualStartConfigPanel = defineComponent({
             <span>默认值</span>
             <textarea
               class="cowin-node-dialog-control"
-              placeholder="调试时作为起始入参"
+              placeholder="调试时作为起始入口参数"
               value={config[CONFIG_KEYS.manualValue] ?? ''}
               onInput={(event) =>
                 props.onUpdateConfig(CONFIG_KEYS.manualValue, getInputValue(event))

@@ -5,6 +5,7 @@ import {
   pushIssue,
   validateNodeByRule
 } from './nodeRules'
+import { getUpstreamOutputVariables } from './rules/helpers'
 
 export function validateProcess(modeler: any): ValidationIssue[] {
   const elementRegistry = modeler.get('elementRegistry')
@@ -65,7 +66,8 @@ export function validateProcess(modeler: any): ValidationIssue[] {
       element,
       definition,
       config,
-      issues
+      issues,
+      getUpstreamOutputVariables
     })
   }
 

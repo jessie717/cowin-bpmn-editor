@@ -1,7 +1,11 @@
-import { allNodeDefinitions } from './paletteNodes'
-import type { CustomNodeType, NodeDefinition } from './types'
+import { nodeModules } from './catalog'
+import type { CustomNodeType, NodeDefinition, NodeModule } from './types'
 
-const definitions = allNodeDefinitions
+const moduleMap = new Map<CustomNodeType, NodeModule>(
+  nodeModules.map((nodeModule) => [nodeModule.definition.type, nodeModule])
+)
+
+const definitions = nodeModules.map((nodeModule) => nodeModule.definition)
 
 const definitionMap = new Map<CustomNodeType, NodeDefinition>(
   definitions.map((definition) => [definition.type, definition])
@@ -22,6 +26,14 @@ export function getNodeDefinition(type?: string | null) {
   return definitionMap.get(type as CustomNodeType)
 }
 
+export function getNodeModule(type?: string | null) {
+  if (!type) {
+    return undefined
+  }
+
+  return moduleMap.get(type as CustomNodeType)
+}
+
 export function getBusinessNodeType(
   businessObject: any
 ): CustomNodeType | undefined {
@@ -34,6 +46,10 @@ export function getElementNodeType(element: any): CustomNodeType | undefined {
 
 export function getElementDefinition(element: any) {
   return getNodeDefinition(getElementNodeType(element))
+}
+
+export function getElementNodeModule(element: any) {
+  return getNodeModule(getElementNodeType(element))
 }
 
 export function readNodeConfig(element: any) {

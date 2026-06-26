@@ -1,8 +1,4 @@
-import { validateFunction } from './rules/functionRule'
-import { validateIf } from './rules/ifRule'
-import { validateLog } from './rules/logRule'
-import { validateManualStart } from './rules/manualStartRule'
-import { validateSwitch } from './rules/switchRule'
+import { getNodeModule } from '../../nodes/registry'
 import type {
   NodeValidationContext,
   NodeValidationRule
@@ -10,18 +6,19 @@ import type {
 
 export { pushIssue } from './rules/helpers'
 
-const nodeRules: Record<string, NodeValidationRule> = {
-  'manual-start': validateManualStart,
-  log: validateLog,
-  function: validateFunction,
-  if: validateIf,
-  switch: validateSwitch
-}
+const nodeRules: Record<string, NodeValidationRule> = {}
 
 export function validateNodeByRule(context: NodeValidationContext) {
+  const moduleRule = getNodeModule(context.definition.type)?.validate
+
+  if (moduleRule) {
+    moduleRule(context)
+    return
+  }
+
   nodeRules[context.definition.type]?.(context)
 }
 
 export function hasNodeValidationRule(type: string) {
-  return Boolean(nodeRules[type])
+  return Boolean(getNodeModule(type)?.validate || nodeRules[type])
 }

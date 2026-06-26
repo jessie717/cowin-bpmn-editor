@@ -1,4 +1,4 @@
-import { allNodeDefinitions } from '../../nodes/paletteNodes'
+import { getNodeDefinitions } from '../../nodes/registry'
 
 const NODE_COUNT = 200
 const COLUMN_COUNT = 20
@@ -32,11 +32,13 @@ function getNodePosition(index: number) {
   }
 }
 
-const manualStartDefinition = allNodeDefinitions.find(
+const nodeDefinitions = getNodeDefinitions()
+
+const manualStartDefinition = nodeDefinitions.find(
   (definition) => definition.type === 'manual-start'
 )
 
-const reusableDefinitions = allNodeDefinitions.filter(
+const reusableDefinitions = nodeDefinitions.filter(
   (definition) => definition.type !== 'manual-start' && definition.rules.maxIncoming !== 0
 )
 

@@ -1,18 +1,17 @@
-import { CONFIG_KEYS, VARIABLE_TYPES } from '../../variables'
+import { CONFIG_KEYS, VARIABLE_TYPES } from '../../../shared/config'
 import {
   assertIncomingCount,
   assertOutgoingCount,
-  isValidVariableType,
   pushIssue
-} from './helpers'
-import type { NodeValidationRule } from './types'
+} from '../../../shared/validation'
+import type { NodeValidationRule } from '../../../types'
 
 export const validateManualStart: NodeValidationRule = (context) => {
-  assertIncomingCount(context, 0)
-  assertOutgoingCount(context, 1)
-
   const name = context.config[CONFIG_KEYS.manualName]?.trim()
   const type = context.config[CONFIG_KEYS.manualType] || VARIABLE_TYPES[0]
+
+  assertIncomingCount(context, 0)
+  assertOutgoingCount(context, 1)
 
   if (!name) {
     pushIssue(
@@ -23,7 +22,7 @@ export const validateManualStart: NodeValidationRule = (context) => {
     )
   }
 
-  if (!isValidVariableType(type)) {
+  if (!VARIABLE_TYPES.includes(type)) {
     pushIssue(
       context.issues,
       context.element.id,

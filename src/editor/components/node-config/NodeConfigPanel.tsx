@@ -1,8 +1,7 @@
 import { defineComponent } from 'vue'
 import type { PropType } from 'vue'
+import { getNodeModule } from '../../../nodes/registry'
 import { DefaultNodeConfigPanel } from './DefaultNodeConfigPanel'
-import { FunctionConfigPanel } from './FunctionConfigPanel'
-import { ManualStartConfigPanel } from './ManualStartConfigPanel'
 import type { NodeConfigPanelProps } from './types'
 
 export const NodeConfigPanel = defineComponent({
@@ -23,18 +22,13 @@ export const NodeConfigPanel = defineComponent({
   },
   setup(props) {
     return () => {
-      if (props.node.definition.type === 'manual-start') {
-        return (
-          <ManualStartConfigPanel
-            node={props.node}
-            onUpdateConfig={props.onUpdateConfig}
-          />
-        )
-      }
+      const ConfigPanel = getNodeModule(
+        props.node.definition.type
+      )?.ConfigPanel as any
 
-      if (props.node.definition.type === 'function') {
+      if (ConfigPanel) {
         return (
-          <FunctionConfigPanel
+          <ConfigPanel
             node={props.node}
             availableVariables={props.availableVariables}
             onUpdateConfig={props.onUpdateConfig}
