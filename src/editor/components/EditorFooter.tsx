@@ -12,9 +12,9 @@ const logColumns = [
   { key: 'time', label: '时间', width: '160px' },
   { key: 'content', label: '内容', width: '120px' },
   { key: 'nodeName', label: '节点名称', width: '160px' },
-  { key: 'processName', label: '流程名称', width: '260px' },
+  { key: 'processName', label: '流程名称', width: '200px' },
   { key: 'instanceId', label: '实例ID', width: '260px' },
-  { key: 'subProcessName', label: '子流程名称', width: '260px' },
+  { key: 'subProcessName', label: '子流程名称', width: '180px' },
   { key: 'subProcessInstanceId', label: '子流程实例ID', width: '260px' },
   { key: 'ip', label: '应用执行IP', width: '150px' }
 ]
@@ -22,12 +22,12 @@ const logColumns = [
 const compileErrorColumns = [
   { key: 'index', label: '序号', width: '60px' },
   { key: 'errorCode', label: '错误码', width: '120px' },
-  { key: 'errorType', label: '错误类型', width: '120px' },
+  { key: 'errorType', label: '错误类型', width: '100px' },
   { key: 'nodeName', label: '节点名称', width: '160px' },
-  { key: 'description', label: '描述', width: '280px' },
-  { key: 'processName', label: '流程名称', width: '260px' },
+  { key: 'description', label: '描述', width: '200px' },
+  { key: 'processName', label: '流程名称', width: '200px' },
   { key: 'instanceId', label: '实例ID', width: '260px' },
-  { key: 'subProcessName', label: '子流程名称', width: '260px' },
+  { key: 'subProcessName', label: '子流程名称', width: '180px' },
   { key: 'subProcessInstanceId', label: '子流程实例ID', width: '260px' },
   { key: 'ip', label: '应该执行IP', width: '150px' }
 ]
