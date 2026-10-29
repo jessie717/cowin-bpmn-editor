@@ -91,6 +91,10 @@
   cursor: pointer;
 }
 
+.cowin-footer-tab.el-button {
+  border-radius: 0;
+}
+
 .cowin-footer-tab:hover,
 .cowin-footer-tab-active {
   color: #222;

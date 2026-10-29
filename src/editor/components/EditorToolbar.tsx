@@ -1,4 +1,5 @@
 import { defineComponent, type PropType } from 'vue'
+import { ElButton } from '../../element-plus'
 // import backIcon from '../../assets/tool-svg/back.svg'
 import bidirectionalIcon from '../../assets/tool-svg/bidirectional.svg'
 import debugIcon from '../../assets/tool-svg/debug.svg'
@@ -71,18 +72,18 @@ function renderAction(
   onClick?: () => void
 ) {
   return (
-    <button
+    <ElButton
       class={[
         'cowin-toolbar-button',
         active ? 'cowin-toolbar-button-active' : '',
         action.danger ? 'cowin-toolbar-button-danger' : ''
       ]}
-      type="button"
-      title={action.title}
+      nativeType="button"
+      {...({ title: action.title } as Record<string, string>)}
       onClick={onClick}
     >
       {action.icon ? <img src={action.icon} alt="" /> : <span>×</span>}
-    </button>
+    </ElButton>
   )
 }
 

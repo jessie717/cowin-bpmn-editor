@@ -2,10 +2,9 @@ import 'bpmn-js/dist/assets/bpmn-js.css'
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css'
 import 'bpmn-js/dist/assets/diagram-js.css'
 import 'diagram-js-minimap/assets/diagram-js-minimap.css'
-import 'element-plus/es/components/message/style/css'
 
-import { ElMessage } from 'element-plus'
 import { computed, defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
+import { ElMessage, ElSplitter, ElSplitterPanel } from '../element-plus'
 import { getElementDefinition, readNodeConfig } from '../nodes/registry'
 import type { ValidationIssue } from '../nodes/types'
 import { EditorToolbar } from './components/EditorToolbar'
@@ -14,7 +13,7 @@ import { EditorMiniMap } from './components/EditorMiniMap'
 import { NodeConfigDialog } from './components/NodeConfigDialog'
 import { OutputVariablesPanel } from './components/OutputVariablesPanel'
 import { createModeler } from './createModeler'
-import { MOCK_PROCESS_200_XML } from './mock/mockProcess200'
+// import { MOCK_PROCESS_200_XML } from './mock/mockProcess200'
 import { ProcessIndex } from './process/ProcessIndex'
 import { DEFAULT_PROCESS_XML } from './sampleXml'
 import type { SelectedNode } from './types'
@@ -28,6 +27,7 @@ export const BpmnEditor = defineComponent({
   name: 'BpmnEditor',
   setup() {
     const canvasRef = ref<HTMLDivElement | null>(null)
+    const palettePaneRef = ref<HTMLDivElement | null>(null)
     const modelerRef = ref<any>(null)
     const selectedNode = ref<SelectedNode | null>(null)
     const outputNode = ref<SelectedNode | null>(null)
@@ -41,6 +41,7 @@ export const BpmnEditor = defineComponent({
     let hoverBreakpointOverlayElement: any = null
     let hoverBreakpointHideTimer: ReturnType<typeof window.setTimeout> | null =
       null
+    let paletteResizeObserver: ResizeObserver | null = null
     const persistentBreakpointOverlayIds = new Map<string, string>()
 
     const outputVariablesNode = computed(
@@ -549,7 +550,26 @@ export const BpmnEditor = defineComponent({
       }
     }
 
+    function syncPalettePanelSize() {
+      const pane = palettePaneRef.value
+
+      if (!pane) {
+        return
+      }
+
+      document.documentElement.style.setProperty(
+        '--cowin-palette-panel-size',
+        `${pane.getBoundingClientRect().height}px`
+      )
+    }
+
     onMounted(async () => {
+      if (palettePaneRef.value) {
+        paletteResizeObserver = new ResizeObserver(syncPalettePanelSize)
+        paletteResizeObserver.observe(palettePaneRef.value)
+        syncPalettePanelSize()
+      }
+
       if (!canvasRef.value) {
         return
       }
@@ -603,6 +623,10 @@ export const BpmnEditor = defineComponent({
     })
 
     onBeforeUnmount(() => {
+      paletteResizeObserver?.disconnect()
+      document.documentElement.style.removeProperty(
+        '--cowin-palette-panel-size'
+      )
       clearHoverBreakpointOverlay()
       clearPersistentBreakpointOverlays()
       modelerRef.value?.destroy()
@@ -618,11 +642,23 @@ export const BpmnEditor = defineComponent({
 
         <main class="cowin-editor-main">
           <aside class="cowin-editor-palette-slot">
-            <OutputVariablesPanel
-              node={debugMode.value ? null : outputVariablesNode.value}
-              nodes={debugOutputNodes.value}
-              debugActive={debugMode.value}
-            />
+            <ElSplitter class="cowin-editor-palette-splitter" layout="vertical">
+              <ElSplitterPanel size="50%" min="160px">
+                <div
+                  ref={(element) =>
+                    (palettePaneRef.value = element as HTMLDivElement | null)
+                  }
+                  class="cowin-editor-palette-pane"
+                />
+              </ElSplitterPanel>
+              <ElSplitterPanel min="120px">
+                <OutputVariablesPanel
+                  node={debugMode.value ? null : outputVariablesNode.value}
+                  nodes={debugOutputNodes.value}
+                  debugActive={debugMode.value}
+                />
+              </ElSplitterPanel>
+            </ElSplitter>
           </aside>
           <section class="cowin-editor-canvas">
             <div

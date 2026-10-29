@@ -55,6 +55,11 @@
   cursor: pointer;
 }
 
+.cowin-minimap-button.el-button {
+  margin: 0;
+  border-radius: 0;
+}
+
 .cowin-minimap-button:first-child {
   border-left: 0;
 }

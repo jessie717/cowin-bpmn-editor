@@ -34,6 +34,11 @@
   cursor: pointer;
 }
 
+.cowin-toolbar-button.el-button {
+  margin: 0 2px 0 0;
+  border-radius: 2px;
+}
+
 .cowin-toolbar-side-right .cowin-toolbar-button {
   margin-right: 0;
   margin-left: 2px;

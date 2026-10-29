@@ -2,8 +2,8 @@
   top: 0;
   left: calc(var(--cowin-palette-width) * -1);
   width: var(--cowin-palette-width);
-  height: 50%;
-  max-height: 50%;
+  height: var(--cowin-palette-panel-size, 50%);
+  max-height: var(--cowin-palette-panel-size, 50%);
   border: 1px dashed #aeb4ba;
   border-radius: 0;
   background: #fff;
@@ -36,6 +36,9 @@
 }
 
 .cowin-palette-header {
+  position: sticky;
+  top: 0;
+  z-index: 3;
   height: 19px;
   padding: 2px 8px;
   background: #e6e6e6;
@@ -46,11 +49,15 @@
 }
 
 .cowin-palette-search {
+  position: sticky;
+  top: 19px;
+  z-index: 3;
   display: flex;
   align-items: center;
   gap: 5px;
   height: 30px;
   padding: 0 8px;
+  background: #fff;
   color: #c7c7c7;
   font-size: 12px;
   border-bottom: 1px solid #f1f1f1;

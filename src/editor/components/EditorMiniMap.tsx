@@ -1,5 +1,6 @@
 import { defineComponent, onBeforeUnmount, ref, watch } from 'vue'
 import type { PropType } from 'vue'
+import { ElButton } from '../../element-plus'
 import mapIcon from '../../assets/map-svg/map.svg'
 import resetIcon from '../../assets/map-svg/reset.svg'
 import zoomInIcon from '../../assets/map-svg/zoom-in.svg'
@@ -14,7 +15,7 @@ export const EditorMiniMap = defineComponent({
     }
   },
   setup(props) {
-    const isOpen = ref(true)
+    const isOpen = ref(false)
     const zoom = ref(100)
     let cleanup: (() => void) | null = null
 
@@ -97,42 +98,42 @@ export const EditorMiniMap = defineComponent({
 
     return () => (
       <div class="cowin-minimap-controls">
-        <button
+        <ElButton
           class={[
             'cowin-minimap-button',
             isOpen.value ? 'cowin-minimap-button-active' : ''
           ]}
-          type="button"
-          title="小地图"
+          nativeType="button"
+          {...({ title: '小地图' } as Record<string, string>)}
           onClick={toggleMiniMap}
         >
           <img src={mapIcon} alt="" />
-        </button>
-        <button
+        </ElButton>
+        <ElButton
           class="cowin-minimap-button"
-          type="button"
-          title="缩小"
+          nativeType="button"
+          {...({ title: '缩小' } as Record<string, string>)}
           onClick={() => zoomBy(0.85)}
         >
           <img src={zoomOutIcon} alt="" />
-        </button>
+        </ElButton>
         <span class="cowin-minimap-zoom">{zoom.value}%</span>
-        <button
+        <ElButton
           class="cowin-minimap-button"
-          type="button"
-          title="放大"
+          nativeType="button"
+          {...({ title: '放大' } as Record<string, string>)}
           onClick={() => zoomBy(1.15)}
         >
           <img src={zoomInIcon} alt="" />
-        </button>
-        <button
+        </ElButton>
+        <ElButton
           class="cowin-minimap-button"
-          type="button"
-          title="重置视图"
+          nativeType="button"
+          {...({ title: '重置视图' } as Record<string, string>)}
           onClick={resetView}
         >
           <img src={resetIcon} alt="" />
-        </button>
+        </ElButton>
       </div>
     )
   }

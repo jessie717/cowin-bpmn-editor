@@ -1,5 +1,6 @@
 import { computed, defineComponent, ref } from 'vue'
 import type { PropType } from 'vue'
+import { ElButton } from '../../element-plus'
 import compileErrorIcon from '../../assets/misc-svg/compile-error.svg'
 import logIcon from '../../assets/misc-svg/log.svg'
 import type { ValidationIssue } from '../../nodes/types'
@@ -138,17 +139,17 @@ export const EditorFooter = defineComponent({
 
     function renderTab(panel: FooterPanel, icon: string, label: string) {
       return (
-        <button
+        <ElButton
           class={[
             'cowin-footer-tab',
             activePanel.value === panel ? 'cowin-footer-tab-active' : ''
           ]}
-          type="button"
+          nativeType="button"
           onClick={() => togglePanel(panel)}
         >
           <img src={icon} alt="" />
           <span>{label}</span>
-        </button>
+        </ElButton>
       )
     }
 

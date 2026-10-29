@@ -7,6 +7,7 @@
 @import './styles/output-variables.css';
 @import './styles/node-dialog.css';
 @import './styles/node-config.css';
+@import './styles/context-helpers.css';
 @import './styles/minimap.css';
 @import './styles/canvas.css';
 @import './styles/context-pad.css';
