@@ -1,5 +1,6 @@
 import { CustomContextPadProvider } from './context-pad/CustomContextPadProvider'
 import { ContextPadViewportGuard } from './context-pad/ContextPadViewportGuard'
+import { CustomPasteNamingBehavior } from './copy-paste/CustomPasteNamingBehavior'
 import { CustomEditingGuard } from './editing/CustomEditingGuard'
 import { CustomOutlineProvider } from './outline/CustomOutlineProvider'
 import { CustomPaletteProvider } from './palette/CustomPaletteProvider'
@@ -14,7 +15,8 @@ export const customBpmnModules = {
     'customRenderer',
     'customRules',
     'customOutlineProvider',
-    'customEditingGuard'
+    'customEditingGuard',
+    'customPasteNamingBehavior'
   ],
   paletteProvider: ['type', CustomPaletteProvider],
   contextPadProvider: ['type', CustomContextPadProvider],
@@ -22,5 +24,6 @@ export const customBpmnModules = {
   customRenderer: ['type', CustomRenderer],
   customRules: ['type', CustomRules],
   customOutlineProvider: ['type', CustomOutlineProvider],
-  customEditingGuard: ['type', CustomEditingGuard]
+  customEditingGuard: ['type', CustomEditingGuard],
+  customPasteNamingBehavior: ['type', CustomPasteNamingBehavior]
 }

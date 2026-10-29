@@ -11,7 +11,8 @@ export {
 } from '../nodes/shared/config'
 export type {
   FunctionInputParameter,
-  FunctionOutputParameter
+  FunctionOutputParameter,
+  ManualStartParameter
 } from '../nodes/shared/config'
 
 export interface WorkflowVariable extends NodeOutputVariable {}
