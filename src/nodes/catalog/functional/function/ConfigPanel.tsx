@@ -1,4 +1,4 @@
-import { defineComponent } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import type { PropType } from 'vue'
 import {
   CONFIG_KEYS,
@@ -9,30 +9,43 @@ import {
   type FunctionInputParameter,
   type FunctionOutputParameter
 } from '../../../shared/config'
+import {
+  ElButton,
+  ElDialog,
+  ElInput,
+  ElMessage,
+  ElOption,
+  ElSelect,
+  ElTable,
+  ElTableColumn
+} from '../../../../element-plus'
+import { ExpressionHelper } from '../../../../editor/components/ExpressionHelper'
+import {
+  ExpressionEditor,
+  type ExpressionInsert
+} from '../../../../editor/components/ExpressionEditor'
+import { InputContext } from '../../../../editor/components/InputContext'
+import {
+  createExpressionSymbols,
+  validateExpression
+} from '../../../../editor/expression'
 import type { NodeConfigPanelProps } from '../../../../editor/components/node-config/types'
-
-function getInputValue(event: Event) {
-  return (
-    event.target as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-  ).value
-}
 
 function renderVariableTypeSelect(
   value: string,
-  onChange: (value: string) => void
+  onChange: (value: string) => void,
+  className = 'cowin-parameter-control'
 ) {
   return (
-    <select
-      class="cowin-parameter-control"
-      value={value || VARIABLE_TYPES[0]}
-      onChange={(event) => onChange(getInputValue(event))}
+    <ElSelect
+      class={className}
+      modelValue={value || VARIABLE_TYPES[0]}
+      onChange={(nextValue: string | number) => onChange(String(nextValue))}
     >
       {VARIABLE_TYPES.map((type) => (
-        <option key={type} value={type}>
-          {type}
-        </option>
+        <ElOption key={type} label={type} value={type} />
       ))}
-    </select>
+    </ElSelect>
   )
 }
 
@@ -47,270 +60,299 @@ export const FunctionConfigPanel = defineComponent({
       type: Array as PropType<NodeConfigPanelProps['availableVariables']>,
       default: () => []
     },
+    onClose: {
+      type: Function as PropType<NodeConfigPanelProps['onClose']>,
+      required: true
+    },
     onUpdateConfig: {
       type: Function as PropType<NodeConfigPanelProps['onUpdateConfig']>,
       required: true
     }
   },
   setup(props) {
-    function readInputParameters() {
-      return parseParameterList<FunctionInputParameter>(
+    const selectedContext = ref('')
+    const selectedExpression = ref('')
+    const draftInputParameters = ref(
+      parseParameterList<FunctionInputParameter>(
         props.node.config[CONFIG_KEYS.functionInputs]
       )
-    }
-
-    function readOutputParameters() {
-      return parseParameterList<FunctionOutputParameter>(
+    )
+    const draftOutputParameters = ref(
+      parseParameterList<FunctionOutputParameter>(
         props.node.config[CONFIG_KEYS.functionOutputs]
       )
-    }
+    )
+    const parameterDialogOpen = ref(false)
+    const insertExpression = ref<ExpressionInsert>()
+    const expressionSymbols = computed(() =>
+      createExpressionSymbols(props.availableVariables)
+    )
+    const editingParameterId = ref<string | null>(null)
+    const parameterForm = ref<FunctionOutputParameter>({
+      id: '',
+      name: '',
+      type: VARIABLE_TYPES[0],
+      expression: ''
+    })
 
-    function updateInputParameter(
-      id: string,
-      patch: Partial<FunctionInputParameter>
-    ) {
-      const nextParameters = readInputParameters().map((parameter) =>
-        parameter.id === id ? { ...parameter, ...patch } : parameter
-      )
-
-      props.onUpdateConfig(
-        CONFIG_KEYS.functionInputs,
-        stringifyParameterList(nextParameters)
-      )
-    }
-
-    function updateOutputParameter(
-      id: string,
-      patch: Partial<FunctionOutputParameter>
-    ) {
-      const nextParameters = readOutputParameters().map((parameter) =>
-        parameter.id === id ? { ...parameter, ...patch } : parameter
-      )
-
-      props.onUpdateConfig(
-        CONFIG_KEYS.functionOutputs,
-        stringifyParameterList(nextParameters)
-      )
-    }
-
-    function addInputParameter() {
-      props.onUpdateConfig(
-        CONFIG_KEYS.functionInputs,
-        stringifyParameterList([
-          ...readInputParameters(),
-          {
-            id: createParameterId('input'),
-            name: '',
-            type: VARIABLE_TYPES[0],
-            source: props.availableVariables[0]?.id ?? '',
-            expression: ''
-          }
-        ])
-      )
-    }
-
-    function addOutputParameter() {
-      props.onUpdateConfig(
-        CONFIG_KEYS.functionOutputs,
-        stringifyParameterList([
-          ...readOutputParameters(),
-          {
+    function openParameterDialog(parameter?: FunctionOutputParameter) {
+      editingParameterId.value = parameter?.id ?? null
+      selectedContext.value = ''
+      selectedExpression.value = parameter?.expression ?? ''
+      parameterForm.value = parameter
+        ? { ...parameter }
+        : {
             id: createParameterId('output'),
             name: '',
             type: VARIABLE_TYPES[0],
-            expression: ''
+            expression: selectedExpression.value || selectedContext.value
           }
-        ])
+      parameterDialogOpen.value = true
+    }
+
+    function closeParameterDialog() {
+      parameterDialogOpen.value = false
+      editingParameterId.value = null
+    }
+
+    function updateParameterForm(patch: Partial<FunctionOutputParameter>) {
+      parameterForm.value = {
+        ...parameterForm.value,
+        ...patch
+      }
+    }
+
+    function submitParameterDialog() {
+      const nextParameter = { ...parameterForm.value }
+      const validation = validateExpression(
+        nextParameter.expression,
+        expressionSymbols.value,
+        nextParameter.type
+      )
+      if (!validation.valid) {
+        ElMessage.error(validation.diagnostics[0]?.message || 'Expression is invalid')
+        return
+      }
+
+      draftOutputParameters.value = editingParameterId.value
+        ? draftOutputParameters.value.map((parameter) =>
+            parameter.id === editingParameterId.value
+              ? nextParameter
+              : parameter
+          )
+        : [...draftOutputParameters.value, nextParameter]
+
+      closeParameterDialog()
+    }
+
+    function removeParameter(id: string) {
+      draftOutputParameters.value = draftOutputParameters.value.filter(
+        (parameter) => parameter.id !== id
       )
     }
 
-    function removeInputParameter(id: string) {
+    function applyConfig() {
+      const invalidParameter = draftOutputParameters.value.find((parameter) =>
+        !validateExpression(
+          parameter.expression,
+          expressionSymbols.value,
+          parameter.type
+        ).valid
+      )
+      if (invalidParameter) {
+        const validation = validateExpression(
+          invalidParameter.expression,
+          expressionSymbols.value,
+          invalidParameter.type
+        )
+        ElMessage.error(
+          `${invalidParameter.name || 'Argument'}: ${validation.diagnostics[0]?.message || 'Expression is invalid'}`
+        )
+        return
+      }
       props.onUpdateConfig(
         CONFIG_KEYS.functionInputs,
-        stringifyParameterList(
-          readInputParameters().filter((parameter) => parameter.id !== id)
-        )
+        stringifyParameterList(draftInputParameters.value)
       )
-    }
-
-    function removeOutputParameter(id: string) {
       props.onUpdateConfig(
         CONFIG_KEYS.functionOutputs,
-        stringifyParameterList(
-          readOutputParameters().filter((parameter) => parameter.id !== id)
-        )
+        stringifyParameterList(draftOutputParameters.value)
       )
-    }
-
-    function renderSourceOptions() {
-      return (
-        <>
-          <option value="">手动输入</option>
-          {props.availableVariables.map((variable) => (
-            <option key={variable.id} value={variable.id}>
-              {variable.nodeLabel ? `${variable.nodeLabel}.` : ''}
-              {variable.name}
-            </option>
-          ))}
-        </>
-      )
+      props.onClose()
     }
 
     return () => {
-      const inputParameters = readInputParameters()
-      const outputParameters = readOutputParameters()
+      const outputParameters = draftOutputParameters.value
 
       return (
         <div class="cowin-parameter-section">
-          <div class="cowin-parameter-title-row">
-            <h3>Input Parameters</h3>
-            <button type="button" onClick={addInputParameter}>
-              Add
-            </button>
+          <div class="cowin-function-helper-row">
+            <InputContext
+              modelValue={selectedContext.value}
+              upstreamVariables={props.availableVariables}
+              onChange={(value) => {
+                selectedContext.value = value
+              }}
+            />
+            <ExpressionHelper
+              modelValue={selectedExpression.value}
+              onChange={(value) => {
+                selectedExpression.value = value
+              }}
+            />
           </div>
-          <table class="cowin-parameter-table">
-            <thead>
-              <tr>
-                <th>参数名称</th>
-                <th>类型</th>
-                <th>来源参数</th>
-                <th>转换表达式</th>
-                <th>操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              {inputParameters.length ? (
-                inputParameters.map((parameter) => (
-                  <tr key={parameter.id}>
-                    <td>
-                      <input
-                        class="cowin-parameter-control"
-                        value={parameter.name}
-                        onInput={(event) =>
-                          updateInputParameter(parameter.id, {
-                            name: getInputValue(event)
-                          })
-                        }
-                      />
-                    </td>
-                    <td>
-                      {renderVariableTypeSelect(parameter.type, (value) =>
-                        updateInputParameter(parameter.id, { type: value })
-                      )}
-                    </td>
-                    <td>
-                      <select
-                        class="cowin-parameter-control"
-                        value={parameter.source}
-                        onChange={(event) =>
-                          updateInputParameter(parameter.id, {
-                            source: getInputValue(event)
-                          })
-                        }
-                      >
-                        {renderSourceOptions()}
-                      </select>
-                    </td>
-                    <td>
-                      <input
-                        class="cowin-parameter-control"
-                        placeholder="例如：source.userId"
-                        value={parameter.expression}
-                        onInput={(event) =>
-                          updateInputParameter(parameter.id, {
-                            expression: getInputValue(event)
-                          })
-                        }
-                      />
-                    </td>
-                    <td>
-                      <button
-                        type="button"
-                        class="cowin-parameter-remove"
-                        onClick={() => removeInputParameter(parameter.id)}
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colspan={5} class="cowin-parameter-empty">
-                    暂无输入参数
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
 
-          <div class="cowin-parameter-title-row">
-            <h3>Output Parameters</h3>
-            <button type="button" onClick={addOutputParameter}>
-              Add
-            </button>
-          </div>
-          <table class="cowin-parameter-table">
-            <thead>
-              <tr>
-                <th>参数名称</th>
-                <th>类型</th>
-                <th>处理表达式</th>
-                <th>操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              {outputParameters.length ? (
-                outputParameters.map((parameter) => (
-                  <tr key={parameter.id}>
-                    <td>
-                      <input
-                        class="cowin-parameter-control"
-                        value={parameter.name}
-                        onInput={(event) =>
-                          updateOutputParameter(parameter.id, {
-                            name: getInputValue(event)
-                          })
-                        }
-                      />
-                    </td>
-                    <td>
-                      {renderVariableTypeSelect(parameter.type, (value) =>
-                        updateOutputParameter(parameter.id, { type: value })
-                      )}
-                    </td>
-                    <td>
-                      <input
-                        class="cowin-parameter-control"
-                        placeholder="例如：input.amount * 100"
-                        value={parameter.expression}
-                        onInput={(event) =>
-                          updateOutputParameter(parameter.id, {
-                            expression: getInputValue(event)
-                          })
-                        }
-                      />
-                    </td>
-                    <td>
-                      <button
-                        type="button"
+          <div>
+            <div class="cowin-parameter-title-row">
+              <h3>Arguments</h3>
+              <ElButton
+                size="small"
+                nativeType="button"
+                onClick={() => openParameterDialog()}
+              >
+                New
+              </ElButton>
+            </div>
+            <ElTable
+              class="cowin-parameter-table"
+              data={outputParameters}
+              rowKey="id"
+              border
+              emptyText="No arguments"
+            >
+              <ElTableColumn prop="name" label="Name" minWidth={140} />
+              <ElTableColumn prop="type" label="Type" minWidth={100} />
+              <ElTableColumn
+                prop="expression"
+                label="Expression"
+                minWidth={180}
+              />
+              <ElTableColumn
+                label="Order"
+                width={80}
+                v-slots={{
+                  default: ({ $index }: { $index: number }) => $index + 1
+                }}
+              />
+              <ElTableColumn
+                label="Action"
+                width={150}
+                v-slots={{
+                  default: ({ row }: { row: FunctionOutputParameter }) => (
+                    <>
+                      <ElButton
+                        size="small"
+                        nativeType="button"
+                        onClick={() => openParameterDialog(row)}
+                      >
+                        Edit
+                      </ElButton>
+                      <ElButton
                         class="cowin-parameter-remove"
-                        onClick={() => removeOutputParameter(parameter.id)}
+                        size="small"
+                        nativeType="button"
+                        type="danger"
+                        onClick={() => removeParameter(row.id)}
                       >
                         Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colspan={4} class="cowin-parameter-empty">
-                    暂无输出参数
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                      </ElButton>
+                    </>
+                  )
+                }}
+              />
+            </ElTable>
+          </div>
+
+          <div class="cowin-parameter-actions">
+            <ElButton nativeType="button" onClick={props.onClose}>
+              Cancel
+            </ElButton>
+            <ElButton nativeType="button" type="primary" onClick={applyConfig}>
+              Apply
+            </ElButton>
+          </div>
+
+          <ElDialog
+            class="cowin-node-dialog cowin-parameter-dialog"
+            modelValue={parameterDialogOpen.value}
+            width="min(760px, calc(100vw - 48px))"
+            destroyOnClose
+            closeOnClickModal={false}
+            onClose={closeParameterDialog}
+            v-slots={{
+              header: () => (
+                <div>
+                  <h2>
+                    {editingParameterId.value
+                      ? 'Edit Argument'
+                      : 'New Argument'}
+                  </h2>
+                </div>
+              )
+            }}
+          >
+            <div class="cowin-parameter-form">
+              <div class="cowin-function-helper-row">
+                <InputContext
+                  modelValue={selectedContext.value}
+                  upstreamVariables={props.availableVariables}
+                  onChange={(value) => {
+                    selectedContext.value = value
+                    insertExpression.value?.(value)
+                  }}
+                />
+                <ExpressionHelper
+                  modelValue={selectedExpression.value}
+                  onChange={(value) => {
+                    selectedExpression.value = value
+                    insertExpression.value?.(value)
+                  }}
+                />
+              </div>
+              <label class="cowin-node-dialog-field cowin-parameter-form-field">
+                <span>Name</span>
+                <ElInput
+                  class="cowin-node-dialog-control"
+                  modelValue={parameterForm.value.name}
+                  onInput={(value: string | number) =>
+                    updateParameterForm({ name: String(value ?? '') })
+                  }
+                />
+              </label>
+              <label class="cowin-node-dialog-field cowin-parameter-form-field">
+                <span>Type</span>
+                {renderVariableTypeSelect(
+                  parameterForm.value.type,
+                  (type) => updateParameterForm({ type }),
+                  'cowin-node-dialog-control'
+                )}
+              </label>
+              <label class="cowin-node-dialog-field cowin-parameter-form-field">
+                <span>Expression</span>
+                <ExpressionEditor
+                  modelValue={parameterForm.value.expression}
+                  symbols={expressionSymbols.value}
+                  expectedType={parameterForm.value.type}
+                  onChange={(value) => updateParameterForm({ expression: value })}
+                  onReady={(insert) => {
+                    insertExpression.value = insert
+                  }}
+                />
+              </label>
+              <div class="cowin-parameter-actions">
+                <ElButton nativeType="button" onClick={closeParameterDialog}>
+                  Cancel
+                </ElButton>
+                <ElButton
+                  nativeType="button"
+                  type="primary"
+                  onClick={submitParameterDialog}
+                >
+                  OK
+                </ElButton>
+              </div>
+            </div>
+          </ElDialog>
         </div>
       )
     }

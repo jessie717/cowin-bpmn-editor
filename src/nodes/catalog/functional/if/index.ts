@@ -1,5 +1,6 @@
 import { createNodeModule } from '../../../shared/createNodeDefinition'
 import { NODE_COLORS } from '../../../shared/colors'
+import { IfConfigPanel } from './ConfigPanel'
 import { validateIf } from './validation'
 
 export const ifNode = createNodeModule(
@@ -13,6 +14,7 @@ export const ifNode = createNodeModule(
     color: NODE_COLORS.blue
   },
   {
+    ConfigPanel: IfConfigPanel,
     validate: validateIf
   }
 )

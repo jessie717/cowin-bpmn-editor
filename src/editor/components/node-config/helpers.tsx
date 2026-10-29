@@ -1,11 +1,6 @@
 import { VARIABLE_TYPES } from '../../variables'
+import { ElInput, ElOption, ElSelect } from '../../../element-plus'
 import type { DefaultConfigFieldProps } from './types'
-
-export function getInputValue(event: Event) {
-  return (
-    event.target as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-  ).value
-}
 
 export function renderDefaultConfigField({
   field,
@@ -13,6 +8,8 @@ export function renderDefaultConfigField({
   onUpdateConfig
 }: DefaultConfigFieldProps) {
   const baseClass = 'cowin-node-dialog-control'
+  const updateField = (nextValue: string | number) =>
+    onUpdateConfig(field.key, String(nextValue ?? ''))
 
   return (
     <label key={field.key} class="cowin-node-dialog-field">
@@ -21,30 +18,34 @@ export function renderDefaultConfigField({
         {field.required ? <strong>*</strong> : null}
       </span>
       {field.control === 'textarea' ? (
-        <textarea
+        <ElInput
           class={baseClass}
+          type="textarea"
+          autosize={{ minRows: 3 }}
           placeholder={field.placeholder}
-          value={value}
-          onInput={(event) => onUpdateConfig(field.key, getInputValue(event))}
+          modelValue={value}
+          onInput={updateField}
         />
       ) : field.control === 'select' ? (
-        <select
+        <ElSelect
           class={baseClass}
-          value={value}
-          onChange={(event) => onUpdateConfig(field.key, getInputValue(event))}
+          modelValue={value}
+          onChange={updateField}
         >
           {field.options.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
+            <ElOption
+              key={option.value}
+              label={option.label}
+              value={option.value}
+            />
           ))}
-        </select>
+        </ElSelect>
       ) : (
-        <input
+        <ElInput
           class={baseClass}
           placeholder={field.placeholder}
-          value={value}
-          onInput={(event) => onUpdateConfig(field.key, getInputValue(event))}
+          modelValue={value}
+          onInput={updateField}
         />
       )}
     </label>
@@ -56,16 +57,14 @@ export function renderVariableTypeSelect(
   onChange: (value: string) => void
 ) {
   return (
-    <select
+    <ElSelect
       class="cowin-parameter-control"
-      value={value || VARIABLE_TYPES[0]}
-      onChange={(event) => onChange(getInputValue(event))}
+      modelValue={value || VARIABLE_TYPES[0]}
+      onChange={(nextValue: string | number) => onChange(String(nextValue))}
     >
       {VARIABLE_TYPES.map((type) => (
-        <option key={type} value={type}>
-          {type}
-        </option>
+        <ElOption key={type} label={type} value={type} />
       ))}
-    </select>
+    </ElSelect>
   )
 }

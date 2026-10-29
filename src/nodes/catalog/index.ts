@@ -25,6 +25,7 @@ import { importNode } from './functional/import'
 import { releaseNode } from './functional/release'
 import { resultNode } from './functional/result'
 import { runJobNode } from './functional/run-job'
+import { runApfRuleNode } from './functional/run-apf-rule'
 import { runRuleNode } from './functional/run-rule'
 import { scriptNode } from './functional/script'
 import { sqlNode } from './functional/sql'
@@ -68,6 +69,7 @@ export const nodeModules: NodeModule[] = [
   resultNode,
   runJobNode,
   runRuleNode,
+  runApfRuleNode,
   externalRuleNode,
   sqlNode,
   exportSqlNode,

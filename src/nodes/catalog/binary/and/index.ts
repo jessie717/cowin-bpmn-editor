@@ -1,13 +1,19 @@
 import { createNodeModule } from '../../../shared/createNodeDefinition'
 import { NODE_COLORS } from '../../../shared/colors'
+import { AndConfigPanel } from './ConfigPanel'
 
-export const andNode = createNodeModule({
-  type: 'and',
-  label: 'And',
-  icon: '&',
-  group: 'binary',
-  groupLabel: 'Binary节点',
-  order: 110,
-  color: NODE_COLORS.green,
-  bpmnType: 'bpmn:ExclusiveGateway'
-})
+export const andNode = createNodeModule(
+  {
+    type: 'and',
+    label: 'And',
+    icon: '&',
+    group: 'binary',
+    groupLabel: 'Binary节点',
+    order: 110,
+    color: NODE_COLORS.green,
+    bpmnType: 'bpmn:ExclusiveGateway'
+  },
+  {
+    ConfigPanel: AndConfigPanel
+  }
+)

@@ -4,8 +4,15 @@ export const CONFIG_KEYS = {
   manualName: 'manualStartParameterName',
   manualType: 'manualStartParameterType',
   manualValue: 'manualStartParameterValue',
+  manualParameters: 'manualStartParameters',
   functionInputs: 'functionInputParameters',
   functionOutputs: 'functionOutputParameters'
+}
+
+export interface ManualStartParameter {
+  id: string
+  name: string
+  type: string
 }
 
 export interface FunctionInputParameter {

@@ -1,5 +1,6 @@
 import { defineComponent } from 'vue'
 import type { PropType } from 'vue'
+import { ElDialog } from '../../element-plus'
 import type { SelectedNode } from '../types'
 import type { WorkflowVariable } from '../variables'
 import { NodeConfigPanel } from './node-config/NodeConfigPanel'
@@ -25,32 +26,35 @@ export const NodeConfigDialog = defineComponent({
     }
   },
   setup(props) {
-    return () =>
-      props.node ? (
-        <div class="cowin-node-dialog-mask" onClick={props.onClose}>
-          <section
-            class="cowin-node-dialog"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <header class="cowin-node-dialog-header">
-              <div>
-                <h2>{props.node.definition.label}</h2>
-                <p>{props.node.id}</p>
-              </div>
-              <button type="button" onClick={props.onClose}>
-                ×
-              </button>
-            </header>
+    return () => {
+      const node = props.node
+      const dialogWidth = 'min(760px, calc(100vw - 48px))'
 
-            <div class="cowin-node-dialog-body">
-              <NodeConfigPanel
-                node={props.node}
-                availableVariables={props.availableVariables}
-                onUpdateConfig={props.onUpdateConfig}
-              />
-            </div>
-          </section>
-        </div>
+      return node ? (
+        <ElDialog
+          class="cowin-node-dialog"
+          modelValue={Boolean(node)}
+          width={dialogWidth}
+          destroyOnClose
+          closeOnClickModal
+          onClose={props.onClose}
+          v-slots={{
+            header: () => (
+              <div>
+                <h2>{node.definition.label}</h2>
+                {/* <p>{node.id}</p> */}
+              </div>
+            )
+          }}
+        >
+          <NodeConfigPanel
+            node={node}
+            availableVariables={props.availableVariables}
+            onClose={props.onClose}
+            onUpdateConfig={props.onUpdateConfig}
+          />
+        </ElDialog>
       ) : null
+    }
   }
 })

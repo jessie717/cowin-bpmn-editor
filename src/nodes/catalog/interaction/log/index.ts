@@ -1,5 +1,6 @@
 import { createNodeModule } from '../../../shared/createNodeDefinition'
 import { NODE_COLORS } from '../../../shared/colors'
+import { LogConfigPanel } from './ConfigPanel'
 import { validateLog } from './validation'
 
 export const logNode = createNodeModule(
@@ -13,6 +14,7 @@ export const logNode = createNodeModule(
     color: NODE_COLORS.yellow
   },
   {
+    ConfigPanel: LogConfigPanel,
     validate: validateLog
   }
 )

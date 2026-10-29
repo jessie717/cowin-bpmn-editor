@@ -9,15 +9,20 @@
 }
 
 .cowin-node-dialog {
+  display: flex;
+  flex-direction: column;
   width: min(760px, calc(100vw - 48px));
-  max-height: min(640px, calc(100vh - 80px));
+  /* 临时自适应高度：高度随内容伸缩，最高不超过视口（15vh 顶部偏移 + 50px 底部边距） */
+  max-height: calc(85vh - 50px);
   overflow: hidden;
   border: 1px solid #cfd7df;
+  border-radius: 0;
   background: #fff;
   box-shadow: 0 12px 30px rgb(15 23 42 / 18%);
+  --el-dialog-padding-primary: 0;
 }
 
-.cowin-node-dialog-header {
+.cowin-node-dialog .el-dialog__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -27,20 +32,20 @@
   background: #f8f9fb;
 }
 
-.cowin-node-dialog-header h2 {
+.cowin-node-dialog .el-dialog__header h2 {
   margin: 0;
   color: #1f2933;
   font-size: 15px;
   font-weight: 600;
 }
 
-.cowin-node-dialog-header p {
+.cowin-node-dialog .el-dialog__header p {
   margin: 3px 0 0;
   color: #6b7280;
   font-size: 12px;
 }
 
-.cowin-node-dialog-header button {
+.cowin-node-dialog .el-dialog__headerbtn {
   display: grid;
   place-items: center;
   width: 28px;
@@ -53,8 +58,14 @@
   cursor: pointer;
 }
 
-.cowin-node-dialog-body {
-  max-height: 560px;
+.cowin-node-dialog .el-dialog__close {
+  color: #ec221f;
+  font-size: 18px;
+}
+
+.cowin-node-dialog .el-dialog__body {
+  flex: 1;
+  min-height: 0;
   overflow: auto;
   padding: 14px;
 }
@@ -88,14 +99,50 @@
   outline: none;
 }
 
-textarea.cowin-node-dialog-control {
-  min-height: 88px;
-  resize: vertical;
+.cowin-node-dialog-control.el-input,
+.cowin-node-dialog-control.el-select,
+.cowin-node-dialog-control.el-textarea {
+  min-height: auto;
+  border: 0;
+  background: transparent;
+  padding: 0;
+}
+
+.cowin-node-dialog-control .el-input__wrapper,
+.cowin-node-dialog-control .el-select__wrapper,
+.cowin-node-dialog-control .el-textarea__inner {
+  min-height: 32px;
+  border-radius: 0;
+  color: #1f2933;
+  font-size: 13px;
+  box-shadow: 0 0 0 1px #cfd7df inset;
 }
 
 .cowin-node-dialog-control:focus {
   border-color: #0878be;
   box-shadow: 0 0 0 2px rgb(8 120 190 / 14%);
+}
+
+.cowin-expression-editor {
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--el-border-color);
+  border-radius: var(--el-border-radius-base);
+  background: var(--el-fill-color-blank);
+  transition: border-color 0.2s;
+}
+
+.cowin-expression-editor:focus-within {
+  border-color: var(--el-color-primary);
+}
+
+.cowin-node-dialog-control .el-input__wrapper.is-focus,
+.cowin-node-dialog-control .el-select__wrapper.is-focused,
+.cowin-node-dialog-control .el-textarea__inner:focus {
+  box-shadow:
+    0 0 0 1px #0878be inset,
+    0 0 0 2px rgb(8 120 190 / 14%);
 }
 
 .cowin-node-dialog-empty {

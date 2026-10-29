@@ -18,6 +18,10 @@ export const NodeConfigPanel = defineComponent({
     onUpdateConfig: {
       type: Function as PropType<NodeConfigPanelProps['onUpdateConfig']>,
       required: true
+    },
+    onClose: {
+      type: Function as PropType<NodeConfigPanelProps['onClose']>,
+      required: true
     }
   },
   setup(props) {
@@ -32,6 +36,7 @@ export const NodeConfigPanel = defineComponent({
             node={props.node}
             availableVariables={props.availableVariables}
             onUpdateConfig={props.onUpdateConfig}
+            onClose={props.onClose}
           />
         )
       }

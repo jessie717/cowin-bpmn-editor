@@ -5,6 +5,7 @@ import type { WorkflowVariable } from '../../variables'
 export interface NodeConfigPanelProps {
   node: SelectedNode
   availableVariables: WorkflowVariable[]
+  onClose: () => void
   onUpdateConfig: (key: string, value: string) => void
 }
 

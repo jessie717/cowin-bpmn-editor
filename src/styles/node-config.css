@@ -16,6 +16,13 @@
   margin-top: 0;
 }
 
+.cowin-function-helper-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
 .cowin-parameter-title-row h3 {
   margin: 0;
 }
@@ -29,6 +36,12 @@
   color: #344050;
   font-size: 12px;
   cursor: pointer;
+}
+
+.cowin-parameter-title-row .el-button,
+.cowin-parameter-remove.el-button {
+  margin: 0;
+  border-radius: 0;
 }
 
 .cowin-parameter-title-row button:hover {
@@ -46,6 +59,28 @@
   border-collapse: collapse;
   table-layout: fixed;
   font-size: 12px;
+}
+
+.cowin-parameter-table.el-table {
+  border-radius: 0;
+  color: #1f2933;
+  font-size: 12px;
+  --el-table-border-color: #d9dfe5;
+  --el-table-header-bg-color: #f6f6f6;
+  --el-table-header-text-color: #666;
+  --el-table-row-hover-bg-color: #eef7fc;
+}
+
+.cowin-parameter-table.el-table .el-table__cell {
+  padding: 4px;
+}
+
+.cowin-parameter-table.el-table th.el-table__cell {
+  font-weight: 400;
+}
+
+.cowin-logic-group-table.el-table .cell {
+  white-space: nowrap;
 }
 
 .cowin-parameter-table th,
@@ -74,6 +109,29 @@
   outline: none;
 }
 
+.cowin-parameter-control.el-input,
+.cowin-parameter-control.el-select {
+  border: 0;
+  background: transparent;
+  padding: 0;
+}
+
+.cowin-parameter-control .el-input__wrapper,
+.cowin-parameter-control .el-select__wrapper {
+  min-height: 24px;
+  height: 24px;
+  border-radius: 0;
+  padding: 0 5px;
+  color: #1f2933;
+  font-size: 12px;
+  box-shadow: 0 0 0 1px #cfd7df inset;
+}
+
+.cowin-parameter-control .el-input__wrapper.is-focus,
+.cowin-parameter-control .el-select__wrapper.is-focused {
+  box-shadow: 0 0 0 1px #0878be inset;
+}
+
 .cowin-parameter-control:focus {
   border-color: #0878be;
 }
@@ -81,4 +139,229 @@
 .cowin-parameter-empty {
   color: #999;
   text-align: center !important;
+}
+
+.cowin-parameter-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.cowin-parameter-form-field {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+}
+
+.cowin-node-dialog-field.cowin-parameter-form-field > span {
+  margin: 6px 0 0;
+}
+
+.cowin-parameter-sub-form {
+  margin-top: 10px;
+}
+
+.cowin-event-info-form {
+  border: 1px solid #d9dfe5;
+  padding: 12px;
+}
+
+.cowin-parameter-title-nowrap {
+  white-space: nowrap;
+}
+
+.cowin-parameter-form-field-wide-label {
+  grid-template-columns: max-content minmax(0, 1fr);
+}
+
+.cowin-readonly-value {
+  min-height: 32px;
+  border: 1px solid #cfd7df;
+  background: #f8f9fb;
+  padding: 6px 8px;
+  color: #4b5563;
+  font-size: 13px;
+}
+
+.cowin-inline-control {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  min-width: 0;
+}
+
+.cowin-rule-name-control {
+  grid-template-columns: minmax(0, 1fr) 28px auto;
+}
+
+.cowin-argument-value-control {
+  grid-template-columns: minmax(0, 1fr) auto auto;
+}
+
+.cowin-argument-delete-placeholder {
+  visibility: hidden;
+}
+
+.cowin-output-argument-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cowin-run-apf-rule-config .cowin-parameter-title-row {
+  padding: 7px 10px;
+  background: #e8eaed;
+}
+
+.cowin-run-apf-rule-config .cowin-parameter-form-field {
+  grid-template-columns: 136px minmax(0, 1fr);
+}
+
+.cowin-run-apf-rule-config .cowin-parameter-form-field > span {
+  white-space: nowrap;
+}
+
+.cowin-cron-control {
+  grid-template-columns: minmax(0, 1fr) 28px;
+}
+
+.cowin-schedule-interval-control {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 120px;
+  gap: 8px;
+  min-width: 0;
+}
+
+.cowin-schedule-week-range {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  padding-top: 5px;
+}
+
+.cowin-schedule-week-range .el-checkbox {
+  margin-right: 0;
+}
+
+.cowin-schedule-cron-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 12px;
+}
+
+.cowin-icon-button.el-button {
+  width: 28px;
+  min-width: 28px;
+  padding: 0;
+  border-radius: 0;
+}
+
+.cowin-config-preview {
+  max-height: 420px;
+  margin: 0;
+  overflow: auto;
+  border: 1px solid #d9dfe5;
+  background: #f8f9fb;
+  padding: 10px;
+  color: #1f2933;
+  font-family:
+    ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.cowin-clickable-filter .el-textarea__inner {
+  cursor: pointer;
+}
+
+.cowin-choose-table .el-table__row {
+  cursor: pointer;
+}
+
+.cowin-choose-table .cowin-table-row-active > td {
+  background: #d8ecf8 !important;
+}
+
+@media (max-width: 720px) {
+  .cowin-function-helper-row {
+    grid-template-columns: 1fr;
+  }
+
+  .cowin-parameter-form-field {
+    grid-template-columns: 1fr;
+  }
+
+  .cowin-inline-control {
+    grid-template-columns: 1fr;
+  }
+
+  .cowin-cron-control {
+    grid-template-columns: minmax(0, 1fr) 28px;
+  }
+
+  .cowin-rule-name-control {
+    grid-template-columns: 1fr;
+  }
+
+  .cowin-schedule-interval-control,
+  .cowin-schedule-cron-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cowin-draggable-row {
+  cursor: grab;
+}
+
+.cowin-draggable-row-active {
+  cursor: grabbing;
+  opacity: 0.72;
+}
+
+.cowin-draggable-row-over > td {
+  background: #d8ecf8 !important;
+}
+
+.cowin-or-transfer-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.cowin-or-transfer-column {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cowin-or-output-table .el-table__row {
+  cursor: pointer;
+}
+
+.cowin-or-output-table .cowin-table-row-active > td {
+  background: #d8ecf8 !important;
+}
+
+.cowin-or-transfer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.cowin-or-transfer-actions .el-button {
+  margin: 0;
+}
+
+.cowin-or-transfer-actions-right {
+  justify-content: flex-end;
+}
+
+@media (max-width: 720px) {
+  .cowin-or-transfer-grid {
+    grid-template-columns: 1fr;
+  }
 }
