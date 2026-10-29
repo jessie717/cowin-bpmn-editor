@@ -18,6 +18,18 @@ export const RUN_APF_RULE_SERVICE_HARD_CODED = 'CMD_Qdlis|Station'
 /** Input Arguments 第一行为固定参数，不提供删除入口 */
 export const RUN_APF_RULE_FIXED_INPUT_NAME = 'DispatchStationID'
 
+/** Output Arguments Type 下拉可选的 Java 数据类型 */
+export const RUN_APF_RULE_OUTPUT_TYPES = [
+  'String',
+  'Integer',
+  'Double',
+  'Float',
+  'Boolean',
+  'BigDecimal',
+  'Date',
+  'Table'
+]
+
 export interface RunApfRuleInputArgument {
   id: string
   name: string

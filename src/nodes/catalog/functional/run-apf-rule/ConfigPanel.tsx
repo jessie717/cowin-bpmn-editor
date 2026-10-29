@@ -27,6 +27,7 @@ import {
   RUN_APF_RULE_CONFIG_KEYS,
   RUN_APF_RULE_CONNECTORS,
   RUN_APF_RULE_FIXED_INPUT_NAME,
+  RUN_APF_RULE_OUTPUT_TYPES,
   RUN_APF_RULE_SERVICE_HARD_CODED,
   getRunApfRuleService,
   type RunApfRuleInputArgument,
@@ -439,17 +440,23 @@ export const RunApfRuleConfigPanel = defineComponent({
                   $index: number
                 }) => (
                   <div class="cowin-inline-control cowin-argument-value-control">
-                    <ElInput
+                    <ElSelect
                       class="cowin-parameter-control"
                       modelValue={row.type}
-                      readonly={$index === 0}
                       disabled={$index === 0}
-                      onInput={(value: string | number) =>
+                      filterable
+                      onChange={(value: string | number) =>
                         updateOutputArgument(row.id, {
                           type: String(value ?? '')
                         })
                       }
-                    />
+                    >
+                      {Array.from(
+                        new Set([...RUN_APF_RULE_OUTPUT_TYPES, row.type].filter(Boolean))
+                      ).map((type) => (
+                        <ElOption key={type} label={type} value={type} />
+                      ))}
+                    </ElSelect>
                     {/* 第一行为服务默认输出，不提供删除按钮，但保留同宽占位以保持各行列对齐 */}
                     {$index > 0 ? (
                       <ElButton
