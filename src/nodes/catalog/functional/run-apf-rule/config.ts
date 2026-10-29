@@ -2,6 +2,7 @@ export const RUN_APF_RULE_CONFIG_KEYS = {
   connector: 'runApfRuleConnector',
   serviceName: 'runApfRuleServiceName',
   inputArguments: 'runApfRuleInputArguments',
+  outputArguments: 'runApfRuleOutputArguments',
   timeout: 'runApfRuleTimeout'
 }
 

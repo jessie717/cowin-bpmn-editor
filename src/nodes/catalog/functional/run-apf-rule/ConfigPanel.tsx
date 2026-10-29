@@ -29,7 +29,8 @@ import {
   RUN_APF_RULE_FIXED_INPUT_NAME,
   RUN_APF_RULE_SERVICE_HARD_CODED,
   getRunApfRuleService,
-  type RunApfRuleInputArgument
+  type RunApfRuleInputArgument,
+  type RunApfRuleOutputArgument
 } from './config'
 
 const TABLE_TYPE_ICON = (
@@ -45,8 +46,6 @@ const TABLE_TYPE_ICON = (
     <path d="M1.5 5.5h11M5.5 5.5v6" stroke="#0878be" />
   </svg>
 )
-
-type FxTarget = 'value' | 'timeout'
 
 export const RunApfRuleConfigPanel = defineComponent({
   name: 'RunApfRuleConfigPanel',
@@ -95,9 +94,18 @@ export const RunApfRuleConfigPanel = defineComponent({
     )
     const timeout = ref(config[RUN_APF_RULE_CONFIG_KEYS.timeout] || '')
 
+    const savedOutputArguments = parseParameterList<RunApfRuleOutputArgument>(
+      config[RUN_APF_RULE_CONFIG_KEYS.outputArguments]
+    )
+    const draftOutputArguments = ref(
+      savedOutputArguments.length
+        ? savedOutputArguments
+        : [...service.outputArguments]
+    )
+    const batchDialogOpen = ref(false)
+    const batchText = ref('')
+
     const fxDialogOpen = ref(false)
-    const fxTarget = ref<FxTarget>('value')
-    const fxArgumentId = ref('')
     const fxExpression = ref('')
     const selectedContext = ref('')
     const selectedExpression = ref('')
@@ -139,32 +147,93 @@ export const RunApfRuleConfigPanel = defineComponent({
       )
     }
 
-    function openFxDialog(target: FxTarget, argumentId = '') {
-      fxTarget.value = target
-      fxArgumentId.value = argumentId
+    function updateOutputArgument(
+      id: string,
+      patch: Partial<RunApfRuleOutputArgument>
+    ) {
+      draftOutputArguments.value = draftOutputArguments.value.map((argument) =>
+        argument.id === id ? { ...argument, ...patch } : argument
+      )
+    }
+
+    function addOutputArgument() {
+      draftOutputArguments.value = [
+        ...draftOutputArguments.value,
+        {
+          id: createParameterId('run-apf-rule-output'),
+          name: '',
+          type: ''
+        }
+      ]
+    }
+
+    function removeOutputArgument(id: string) {
+      const index = draftOutputArguments.value.findIndex(
+        (argument) => argument.id === id
+      )
+
+      // 第一行为服务默认输出（table），不可删除
+      if (index <= 0) {
+        return
+      }
+
+      draftOutputArguments.value = draftOutputArguments.value.filter(
+        (argument) => argument.id !== id
+      )
+    }
+
+    function openBatchDialog() {
+      batchText.value = ''
+      batchDialogOpen.value = true
+    }
+
+    function closeBatchDialog() {
+      batchDialogOpen.value = false
+    }
+
+    // 批量格式：column:type|column:type|column:type
+    function submitBatchDialog() {
+      const rows = batchText.value
+        .split('|')
+        .map((part) => part.trim())
+        .filter(Boolean)
+        .map((part) => {
+          const separatorIndex = part.indexOf(':')
+          return separatorIndex === -1
+            ? { name: part, type: '' }
+            : {
+                name: part.slice(0, separatorIndex).trim(),
+                type: part.slice(separatorIndex + 1).trim()
+              }
+        })
+        .filter((row) => row.name)
+
+      if (rows.length) {
+        draftOutputArguments.value = [
+          ...draftOutputArguments.value,
+          ...rows.map((row) => ({
+            id: createParameterId('run-apf-rule-output'),
+            ...row
+          }))
+        ]
+      }
+
+      closeBatchDialog()
+    }
+
+    function openFxDialog() {
       selectedContext.value = ''
       selectedExpression.value = ''
-      fxExpression.value =
-        target === 'timeout'
-          ? timeout.value
-          : (draftInputArguments.value.find(
-              (argument) => argument.id === argumentId
-            )?.value ?? '')
+      fxExpression.value = timeout.value
       fxDialogOpen.value = true
     }
 
     function closeFxDialog() {
       fxDialogOpen.value = false
-      fxArgumentId.value = ''
     }
 
     function submitFxDialog() {
-      if (fxTarget.value === 'timeout') {
-        timeout.value = fxExpression.value
-      } else if (fxArgumentId.value) {
-        updateArgument(fxArgumentId.value, { value: fxExpression.value })
-      }
-
+      timeout.value = fxExpression.value
       closeFxDialog()
     }
 
@@ -181,6 +250,10 @@ export const RunApfRuleConfigPanel = defineComponent({
         RUN_APF_RULE_CONFIG_KEYS.inputArguments,
         stringifyParameterList(draftInputArguments.value)
       )
+      props.onUpdateConfig(
+        RUN_APF_RULE_CONFIG_KEYS.outputArguments,
+        stringifyParameterList(draftOutputArguments.value)
+      )
       props.onUpdateConfig(RUN_APF_RULE_CONFIG_KEYS.timeout, timeout.value)
       props.onClose()
     }
@@ -196,39 +269,17 @@ export const RunApfRuleConfigPanel = defineComponent({
               <span>
                 <strong>*</strong> Connector Address
               </span>
-              <div class="cowin-inline-control">
-                <ElSelect
-                  class="cowin-node-dialog-control"
-                  modelValue={selectedConnector.value}
-                  onChange={(value: string | number) => {
-                    selectedConnector.value = String(value)
-                  }}
-                >
-                  {RUN_APF_RULE_CONNECTORS.map((connector) => (
-                    <ElOption
-                      key={connector}
-                      label={connector}
-                      value={connector}
-                    />
-                  ))}
-                </ElSelect>
-              </div>
-            </label>
-          </div>
-
-          <div class="cowin-parameter-title-row">
-            <h3>Interface Settings</h3>
-          </div>
-          <div class="cowin-parameter-form">
-            <label class="cowin-node-dialog-field cowin-parameter-form-field">
-              <span>
-                <strong>*</strong> ServiceHardCoded
-              </span>
-              <ElInput
+              <ElSelect
                 class="cowin-node-dialog-control"
-                modelValue={RUN_APF_RULE_SERVICE_HARD_CODED}
-                readonly
-              />
+                modelValue={selectedConnector.value}
+                onChange={(value: string | number) => {
+                  selectedConnector.value = String(value)
+                }}
+              >
+                {RUN_APF_RULE_CONNECTORS.map((connector) => (
+                  <ElOption key={connector} label={connector} value={connector} />
+                ))}
+              </ElSelect>
             </label>
           </div>
 
@@ -267,22 +318,12 @@ export const RunApfRuleConfigPanel = defineComponent({
               minWidth={120}
               v-slots={{
                 default: ({ row }: { row: RunApfRuleInputArgument }) => (
-                  <ElSelect
+                  <ElInput
                     class="cowin-parameter-control"
                     modelValue={row.type || VARIABLE_TYPES[0]}
-                    filterable
-                    allowCreate
-                    defaultFirstOption
-                    onChange={(value: string | number) =>
-                      updateArgument(row.id, { type: String(value) })
-                    }
-                  >
-                    {Array.from(
-                      new Set([...VARIABLE_TYPES, row.type].filter(Boolean))
-                    ).map((type) => (
-                      <ElOption key={type} label={type} value={type} />
-                    ))}
-                  </ElSelect>
+                    readonly
+                    disabled
+                  />
                 )
               }}
             />
@@ -306,13 +347,6 @@ export const RunApfRuleConfigPanel = defineComponent({
                         updateArgument(row.id, { value: String(value ?? '') })
                       }
                     />
-                    <ElButton
-                      size="small"
-                      nativeType="button"
-                      onClick={() => openFxDialog('value', row.id)}
-                    >
-                      Fx
-                    </ElButton>
                     {/* 第一行为固定参数，不提供删除按钮，但保留同宽占位以保持各行列对齐 */}
                     {$index > 0 ? (
                       <ElButton
@@ -340,28 +374,25 @@ export const RunApfRuleConfigPanel = defineComponent({
             />
           </ElTable>
 
-          <div class="cowin-parameter-form cowin-parameter-sub-form">
-            <label class="cowin-node-dialog-field cowin-parameter-form-field">
-              <span>Result Type</span>
-              <ElSelect
-                class="cowin-node-dialog-control"
-                modelValue={service.resultType}
-                disabled
-              >
-                <ElOption
-                  label={service.resultType}
-                  value={service.resultType}
-                />
-              </ElSelect>
-            </label>
-          </div>
-
           <div class="cowin-parameter-title-row">
-            <h3>Output Arguments</h3>
+            <div class="cowin-output-title-left">
+              <h3>Output Arguments</h3>
+              <span class="cowin-result-type-hint">
+                Result Type: <strong>{service.resultType}</strong>
+              </span>
+            </div>
+            <div class="cowin-output-title-actions">
+              <ElButton size="small" nativeType="button" onClick={addOutputArgument}>
+                New
+              </ElButton>
+              <ElButton size="small" nativeType="button" onClick={openBatchDialog}>
+                Batch New
+              </ElButton>
+            </div>
           </div>
           <ElTable
             class="cowin-parameter-table"
-            data={service.outputArguments}
+            data={draftOutputArguments.value}
             rowKey="id"
             border
             emptyText="No output arguments"
@@ -372,23 +403,83 @@ export const RunApfRuleConfigPanel = defineComponent({
               minWidth={180}
               v-slots={{
                 default: ({
-                  row
+                  row,
+                  $index
                 }: {
-                  row: { name: string; type: string }
+                  row: RunApfRuleOutputArgument
+                  $index: number
                 }) => (
-                  <span class="cowin-output-argument-name">
+                  <div class="cowin-output-argument-name">
                     {row.type === 'Table' ? TABLE_TYPE_ICON : null}
-                    {row.name}
-                  </span>
+                    <ElInput
+                      class="cowin-parameter-control"
+                      modelValue={row.name}
+                      readonly={$index === 0}
+                      disabled={$index === 0}
+                      onInput={(value: string | number) =>
+                        updateOutputArgument(row.id, {
+                          name: String(value ?? '')
+                        })
+                      }
+                    />
+                  </div>
                 )
               }}
             />
-            <ElTableColumn prop="type" label="Type" minWidth={120} />
+            <ElTableColumn
+              prop="type"
+              label="Type"
+              minWidth={220}
+              v-slots={{
+                default: ({
+                  row,
+                  $index
+                }: {
+                  row: RunApfRuleOutputArgument
+                  $index: number
+                }) => (
+                  <div class="cowin-inline-control cowin-argument-value-control">
+                    <ElInput
+                      class="cowin-parameter-control"
+                      modelValue={row.type}
+                      readonly={$index === 0}
+                      disabled={$index === 0}
+                      onInput={(value: string | number) =>
+                        updateOutputArgument(row.id, {
+                          type: String(value ?? '')
+                        })
+                      }
+                    />
+                    {/* 第一行为服务默认输出，不提供删除按钮，但保留同宽占位以保持各行列对齐 */}
+                    {$index > 0 ? (
+                      <ElButton
+                        class="cowin-parameter-remove"
+                        size="small"
+                        nativeType="button"
+                        type="danger"
+                        onClick={() => removeOutputArgument(row.id)}
+                      >
+                        Delete
+                      </ElButton>
+                    ) : (
+                      <ElButton
+                        class="cowin-parameter-remove cowin-argument-delete-placeholder"
+                        size="small"
+                        nativeType="button"
+                        type="danger"
+                      >
+                        Delete
+                      </ElButton>
+                    )}
+                  </div>
+                )
+              }}
+            />
           </ElTable>
 
           <div class="cowin-parameter-form cowin-parameter-sub-form">
             <label class="cowin-node-dialog-field cowin-parameter-form-field">
-              <span>Timeout</span>
+              <span>Timeout（秒）</span>
               <div class="cowin-inline-control">
                 <ElInput
                   class="cowin-node-dialog-control"
@@ -400,7 +491,7 @@ export const RunApfRuleConfigPanel = defineComponent({
                 />
                 <ElButton
                   nativeType="button"
-                  onClick={() => openFxDialog('timeout')}
+                  onClick={openFxDialog}
                 >
                   Fx
                 </ElButton>
@@ -437,14 +528,14 @@ export const RunApfRuleConfigPanel = defineComponent({
                 <InputContext
                   modelValue={selectedContext.value}
                   upstreamVariables={props.availableVariables}
-                  onChange={(value) => {
+                  onChange={(value: string) => {
                     selectedContext.value = value
                     insertExpression.value?.(value)
                   }}
                 />
                 <ExpressionHelper
                   modelValue={selectedExpression.value}
-                  onChange={(value) => {
+                  onChange={(value: string) => {
                     selectedExpression.value = value
                     insertExpression.value?.(value)
                   }}
@@ -455,13 +546,7 @@ export const RunApfRuleConfigPanel = defineComponent({
                 <ExpressionEditor
                   modelValue={fxExpression.value}
                   symbols={expressionSymbols.value}
-                  expectedType={
-                    fxTarget.value === 'value'
-                      ? (draftInputArguments.value.find(
-                          (argument) => argument.id === fxArgumentId.value
-                        )?.type ?? '')
-                      : ''
-                  }
+                  expectedType=""
                   onChange={(value) => {
                     fxExpression.value = value
                   }}
@@ -478,6 +563,46 @@ export const RunApfRuleConfigPanel = defineComponent({
                   nativeType="button"
                   type="primary"
                   onClick={submitFxDialog}
+                >
+                  OK
+                </ElButton>
+              </div>
+            </div>
+          </ElDialog>
+
+          <ElDialog
+            class="cowin-node-dialog cowin-parameter-dialog"
+            modelValue={batchDialogOpen.value}
+            width="min(560px, calc(100vw - 48px))"
+            destroyOnClose
+            closeOnClickModal={false}
+            onClose={closeBatchDialog}
+            v-slots={{
+              header: () => (
+                <div>
+                  <h2>Batch Add Output Arguments</h2>
+                </div>
+              )
+            }}
+          >
+            <div class="cowin-parameter-form">
+              <ElInput
+                type="textarea"
+                rows={6}
+                modelValue={batchText.value}
+                placeholder="column:type|column:type|column:type"
+                onInput={(value: string | number) => {
+                  batchText.value = String(value ?? '')
+                }}
+              />
+              <div class="cowin-parameter-actions">
+                <ElButton nativeType="button" onClick={closeBatchDialog}>
+                  Cancel
+                </ElButton>
+                <ElButton
+                  nativeType="button"
+                  type="primary"
+                  onClick={submitBatchDialog}
                 >
                   OK
                 </ElButton>
